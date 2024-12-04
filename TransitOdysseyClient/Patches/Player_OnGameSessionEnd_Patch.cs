@@ -40,6 +40,7 @@ public class Player_OnGameSessionEnd_Patch
                     TransitOdysseyPlugin.Instance.PlayerDied();
                 break;
             case ExitStatus.Transit:
+                TransitOdysseyPlugin.Instance.UnlockNextLocation(locationId);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(exitStatus), exitStatus, null);
