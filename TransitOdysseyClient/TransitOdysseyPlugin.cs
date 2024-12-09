@@ -4,6 +4,10 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using Comfort.Common;
+using EFT;
+using EFT.UI;
+using EFT.UI.Matchmaker;
 using EFTConfiguration.Attributes;
 using HarmonyLib;
 using TransitOdysseyClient.Data;
@@ -107,9 +111,10 @@ public class TransitOdysseyPlugin : BaseUnityPlugin
         // TODO: Implement a better way to determine the next location to unlock/when to unlock
         // Option 1. Unlock the next location if the player has survived the raid from any location
         // Option 2. Determine the next location based on the current location
-
+        // Option 3. Some other shit
 
         // For now, just unlock the next location in the enum
+        // TODO: fix this mess
 
         // Determine the next location to unlock
         ELocation nextLocation = UnlockedLocations.Last() + 1;
@@ -143,14 +148,7 @@ public class TransitOdysseyPlugin : BaseUnityPlugin
         // Update the config entries
         foreach (var entry in _locationConfigEntries)
         {
-            if (entry.Key == StartLocation.Value)
-            {
-                entry.Value.Value = true;
-            }
-            else
-            {
-                entry.Value.Value = false;
-            }
+            entry.Value.Value = entry.Key == StartLocation.Value;
         }
 
         // save unlocked locations
@@ -250,6 +248,28 @@ public class TransitOdysseyPlugin : BaseUnityPlugin
         {
             action();
         }
+
+        TryUpdateLocationSelectionScreen();
+    }
+
+    private void TryUpdateLocationSelectionScreen()
+    {
+        MenuUI menuUI = Singleton<MenuUI>.Instance;
+        if (menuUI == null) return;
+
+        MatchMakerSelectionLocationScreen locationScreen = menuUI.MatchMakerSelectionLocationScreen;
+        if (locationScreen == null) return;
+
+        var raidSettings = AccessTools.Field(typeof(MatchMakerSelectionLocationScreen), "raidSettings_0")
+            .GetValue(locationScreen) as RaidSettings;
+
+        if (raidSettings == null)
+        {
+            Logger.LogError("Raid settings is null");
+            return;
+        }
+
+        locationScreen.method_4(raidSettings);
     }
 
     private static void UpdateLocation(ConfigEntry<bool> configEntry, ELocation location)

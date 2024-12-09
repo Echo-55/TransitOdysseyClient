@@ -1,0 +1,23 @@
+{
+  "laboratory": {
+    "name": "Laboratory",
+    "extracts": [
+      {
+        "name": "Laboratory",
+        "location": "Laboratory",
+        "time": "0:00",
+        "duration": "0:00",
+        "cost": 0
+      }
+    ],
+    "transits": [
+      {
+        "name": "Laboratory",
+        "location": "Laboratory",
+        "time": "0:00",
+        "duration": "0:00",
+        "cost": 0
+      }
+    ]
+  }
+}
